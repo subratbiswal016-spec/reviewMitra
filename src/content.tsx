@@ -42,7 +42,7 @@ const CUSTOM_CSS = `
   margin-top: 12px;
   box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
   width: 100%;
-  max-width: 450px;
+  box-sizing: border-box;
   font-family: "Google Sans", Roboto, Arial, sans-serif;
 }
 .rm-textarea {
@@ -84,6 +84,11 @@ const CUSTOM_CSS = `
   border-color: #6366f1;
   background: #eff6ff;
 }
+.review-mitra-mount {
+  display: inline-block;
+  margin-left: 12px;
+  vertical-align: middle;
+}
 `;
 
 if (typeof document !== 'undefined' && !document.getElementById('rm-custom-styles')) {
@@ -99,6 +104,23 @@ const GenerateReplyUI = ({ reviewText, reviewerName, rating }: { reviewText: str
   const [error, setError] = useState('');
   const [customInstruction, setCustomInstruction] = useState('');
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const injectorRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (injectorRef.current && injectorRef.current.parentElement) {
+      if (drafts.length > 0 || loading || error) {
+        injectorRef.current.parentElement.style.display = 'block';
+        injectorRef.current.parentElement.style.width = '100%';
+        injectorRef.current.parentElement.style.marginLeft = '0';
+        injectorRef.current.parentElement.style.marginTop = '12px';
+      } else {
+        injectorRef.current.parentElement.style.display = 'inline-block';
+        injectorRef.current.parentElement.style.width = 'auto';
+        injectorRef.current.parentElement.style.marginLeft = '12px';
+        injectorRef.current.parentElement.style.marginTop = '0';
+      }
+    }
+  }, [drafts.length, loading, error]);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -152,7 +174,7 @@ const GenerateReplyUI = ({ reviewText, reviewerName, rating }: { reviewText: str
   };
 
   return (
-    <div className="review-mitra-injector" style={{fontFamily: 'Inter, sans-serif'}}>
+    <div ref={injectorRef} className="review-mitra-injector" style={{fontFamily: 'Inter, sans-serif', width: '100%'}}>
       {drafts.length === 0 && !loading && !error && (
         <button onClick={handleGenerate} className="rm-btn">
           <span>✨</span> ReviewMitra AI
@@ -235,7 +257,7 @@ const injectButtons = () => {
   // Find stars (fallback if text is missing)
   document.querySelectorAll('[aria-label*=" stars"], [aria-label*=" star"]').forEach(el => anchorElements.add(el));
 
-  // SUPER FALLBACK: Find the "Like" or "Share" button and inject above its container
+  // SUPER FALLBACK: Find the "Like", "Share", or "Reply" button and inject near it
   document.querySelectorAll('button, div[role="button"], span, a').forEach(el => {
     const text = (el.textContent || '').trim();
     if (text === 'Share' || text === 'Like' || el.getAttribute('aria-label') === 'Share') {
@@ -243,6 +265,14 @@ const injectButtons = () => {
       if (wrapper && wrapper.textContent && wrapper.textContent.length > 30) {
         anchorElements.add(wrapper);
       }
+    }
+    // Look for "Reply" to support Google Business Profile dashboard
+    if (text === 'Reply') {
+       anchorElements.add(el);
+    }
+    // Also look for "Edit" in case they have already replied
+    if (text === 'Edit' && el.tagName.toLowerCase() === 'button') {
+       anchorElements.add(el);
     }
   });
 
@@ -253,7 +283,21 @@ const injectButtons = () => {
 
   anchorElements.forEach(anchor => {
     // ONLY target actual review containers, preventing injection into search results
-    const container = anchor.closest('.jftiEf') || anchor.closest('[data-review-id]');
+    let container = anchor.closest('.jftiEf') || anchor.closest('[data-review-id]');
+    
+    // Fallback for Business Dashboard where standard classes are missing
+    if (!container) {
+      // Find a parent div that contains the reviewer info to act as the container
+      let current: HTMLElement | null = anchor.parentElement;
+      for (let i = 0; i < 6; i++) {
+        if (current && current.tagName === 'DIV' && current.textContent && current.textContent.length > 50) {
+          container = current;
+          break;
+        }
+        if (current) current = current.parentElement;
+      }
+    }
+
     if (container && !reviewContainers.has(container)) {
       reviewContainers.set(container, anchor);
     }
