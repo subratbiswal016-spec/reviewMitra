@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Install & Use ReviewMitra AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --text-light: #64748b;
+            --bg-body: #f4f7f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--bg-body);
+            margin: 0;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 60px 70px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0,0,0,0.02);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--text-dark);
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.03em;
+        }
+        
+        h1 span {
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 60px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .step-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .step-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            display: flex;
+            gap: 24px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(37, 99, 235, 0.1);
+            border-color: var(--primary-border);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .step-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        .step-content p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background-color: var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.95em;
+        }
+
+        .pro-tip {
+            margin-top: 60px;
+            background: var(--primary-light);
+            border: 1px solid var(--primary-border);
+            padding: 30px;
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .pro-tip h3 {
+            margin: 0 0 12px 0;
+            color: #1e3a8a;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.25rem;
+        }
+
+        .pro-tip p {
+            margin: 0;
+            color: #1e40af;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .browser-bar {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            margin-top: 16px;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+            user-select: all;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* PDF / Print Specific Styling */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .step-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1;
+            }
+            .pro-tip {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            /* Ensure background colors print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ ReviewMitra <span>AI</span></h1>
+            <p class="subtitle">The ultimate guide to setting up your AI-Powered Google Reviews Assistant</p>
+        </div>
+
+        <h2>📦 Part 1: How to Install the Extension</h2>
+        
+        <div class="step-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Download & Unzip</h3>
+                    <p>Locate the <strong>ReviewMitra.zip</strong> file you received. Right-click the file and select <span class="highlight">Extract All</span> (on Windows) or double-click it (on Mac) to unzip it. Remember where you saved this new unzipped folder (like your Desktop).</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Open Chrome Extensions</h3>
+                    <p>Open Google Chrome. Click the <strong>three dots (⋮)</strong> in the top right corner of your browser. Go to <strong>Extensions</strong> &gt; <strong>Manage Extensions</strong>.<br><br>Alternatively, you can just copy and paste this link into your address bar:</p>
+                    <div class="browser-bar">chrome://extensions/</div>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Turn on Developer Mode</h3>
+                    <p>Look at the very top right corner of the Extensions page. You will see a toggle switch labeled <span class="highlight">Developer mode</span>. Click the switch to turn it <strong>ON</strong>.</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Load the Extension</h3>
+                    <p>Once Developer mode is ON, a new menu bar will appear at the top left. Click the button that says <span class="highlight">Load unpacked</span>. A file window will open. Find the folder you unzipped in Step 1, select the <strong>dist</strong> folder inside it, and click Select Folder. You're done!</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>🚀 Part 2: How to Use ReviewMitra</h2>
+
+        <div class="step-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Go to Google Maps</h3>
+                    <p>Open Google Maps and search for your business. Click on the <strong>Reviews</strong> tab to see what your customers have written about you.</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Click the Magic Button</h3>
+                    <p>Under every single customer review, you will now magically see a new button that says <span class="highlight">✨ ReviewMitra AI</span>. Click it!</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Choose the Best Draft</h3>
+                    <p>The AI will instantly read the customer's review and generate 3 highly professional, personalized responses for you. Choose the draft you like best.</p>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Copy & Paste</h3>
+                    <p>Click the 📋 <strong>Clipboard Icon</strong> in the corner of your favorite draft to instantly copy it. Finally, click Google's standard "Reply" button and paste it in! You just saved 10 minutes of typing!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="pro-tip">
+            <h3>💡 Secret Pro Tip: Custom Instructions</h3>
+            <p>Do you want the AI to mention something very specific? Type instructions in the small text box (for example, <em>"Mention that we fixed the broken AC"</em> or <em>"Sign off as Mandeep, the General Manager"</em>) and click <strong>Regenerate</strong>. The AI will instantly rewrite all the drafts to follow your exact instructions!</p>
+        </div>
+    </div>
+</body>
+</html>
