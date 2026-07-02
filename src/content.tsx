@@ -7,13 +7,13 @@ const CUSTOM_CSS = `
 .rm-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   border: none;
   border-radius: 100px;
-  padding: 8px 18px;
+  padding: 5px 12px;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   font-family: "Google Sans", Roboto, Arial, sans-serif;
   cursor: pointer;
@@ -109,7 +109,7 @@ const GenerateReplyUI = ({ reviewText, reviewerName, rating }: { reviewText: str
       const storage = await chrome.storage.local.get(['businessId']);
       const businessId = storage.businessId || '';
 
-      const response = await fetch('http://localhost:3000/api/generate', {
+      const response = await fetch('https://reviewmitra-backend.onrender.com/api/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,13 +124,20 @@ const GenerateReplyUI = ({ reviewText, reviewerName, rating }: { reviewText: str
       });
 
       if (!response.ok) {
+        if (response.status === 402) {
+          throw new Error('LIMIT_REACHED');
+        }
         throw new Error('Failed to generate replies');
       }
 
       const data = await response.json();
       setDrafts(data.drafts || []);
     } catch (err: any) {
-      setError(err.message || 'An error occurred');
+      if (err.message === 'LIMIT_REACHED') {
+        setError('LIMIT_REACHED');
+      } else {
+        setError(err.message || 'An error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -158,7 +165,15 @@ const GenerateReplyUI = ({ reviewText, reviewerName, rating }: { reviewText: str
         </button>
       )}
 
-      {error && <div style={{ color: '#ef4444', fontSize: '12px', padding: '8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', marginTop: '8px' }}>{error}</div>}
+      {error && error === 'LIMIT_REACHED' ? (
+        <div style={{ padding: '12px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', marginTop: '8px' }}>
+          <p style={{ margin: '0 0 8px 0', fontSize: '13px', color: '#991b1b', fontWeight: '500', fontFamily: 'Inter' }}>Trial Limit Reached! 🚀</p>
+          <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: '#b91c1c', fontFamily: 'Inter' }}>You've used all your credits. Open your dashboard to scan the QR code and renew!</p>
+          <a href="https://reviewmitra-backend.onrender.com/dashboard" target="_blank" rel="noreferrer" style={{ display: 'inline-block', background: '#ef4444', color: 'white', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', textDecoration: 'none', fontFamily: 'Inter' }}>Open Dashboard to Upgrade</a>
+        </div>
+      ) : error && (
+        <div style={{ color: '#ef4444', fontSize: '12px', padding: '8px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', marginTop: '8px' }}>{error}</div>
+      )}
 
       {(drafts.length > 0) && (
         <div className="rm-box">
