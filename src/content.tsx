@@ -149,7 +149,8 @@ const GenerateReplyUI = ({ reviewText, reviewerName, rating }: { reviewText: str
         if (response.status === 402) {
           throw new Error('LIMIT_REACHED');
         }
-        throw new Error('Failed to generate replies');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to generate replies');
       }
 
       const data = await response.json();
