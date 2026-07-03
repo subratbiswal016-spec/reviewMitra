@@ -14,11 +14,33 @@ function App() {
     });
   }, []);
 
-  const handleSave = () => {
-    chrome.storage?.local.set({ businessId }, () => {
-      setStatus('Settings saved!');
-      setTimeout(() => setStatus('Ready to generate replies!'), 2000);
-    });
+  const handleSave = async () => {
+    if (!businessId.trim()) {
+      setStatus('Please enter a Business ID');
+      return;
+    }
+
+    setStatus('Verifying ID...');
+
+    try {
+      const response = await fetch('https://reviewmitra-backend.onrender.com/api/business/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessId: businessId.trim() })
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        chrome.storage?.local.set({ businessId: businessId.trim() }, () => {
+          setStatus('Ready to generate replies!');
+        });
+      } else {
+        setStatus('Business ID is incorrect!');
+      }
+    } catch (error) {
+      setStatus('Failed to connect to server');
+    }
   };
 
   return (
@@ -52,8 +74,12 @@ function App() {
       </div>
 
       <div className="mt-auto w-full text-center">
-        <p className="text-xs text-slate-500 flex items-center justify-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+        <p className={`text-xs flex items-center justify-center gap-1 font-medium ${
+          status.includes('incorrect') || status.includes('Failed') ? 'text-red-500' : 
+          status.includes('Ready') ? 'text-green-600' : 'text-slate-500'
+        }`}>
+          {status.includes('Ready') && <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span>}
+          {status.includes('incorrect') && <span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span>}
           {status}
         </p>
       </div>
